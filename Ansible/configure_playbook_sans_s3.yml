@@ -4,7 +4,7 @@
   become: yes
   become_user: root
   vars:
-    password: intellipaat
+    password: c001c@t$&g00d1uck
     base_dir: "{{ BASE_DIR|default('/home/prasanjit/') }}"
     icinga_conf: '/etc/icinga/conf.d'
 
@@ -39,7 +39,7 @@
     - name: SSH Restart
       service: name=sshd pattern=/usr/sbin/sshd state=reloaded
 
-    - name: Clonning GIT repo
+    - name: Cloning GIT repo
       git: repo=https://github.com/prasanjit-/icinga_ansible_demo.git dest={{ base_dir }}/IsingaMonitor/
 
     - name: Adjust Timezone to Kolkata in CentOS 6

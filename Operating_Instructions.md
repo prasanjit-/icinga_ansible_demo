@@ -59,6 +59,12 @@ Once you clone the git repository and all hosts are reachable, run the playbook 
 ```
 # ansible-playbook -v configure_playbook.yml
 ```
+OR, when running in local system (non AWS), then no need to set ssh keys -
+```
+# ansible-playbook -v configure_playbook_sans_s3.yml --ask-pass
+```
+
+
 This ansible script performs the following tasks:
 
 * Run some local configurations:

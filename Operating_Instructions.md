@@ -1,7 +1,7 @@
 # Table of Contents
 
 1. [Introduction](#introduction)
-2. [Premisses](#premisses)
+2. [Prerequisites](#prerequisites)
 3. [Installation Procedure](#installation-procedure)
   1. [Clone Git](#clone-git)
   2. [Ansible Ping Test](#ansible-ping-test)
@@ -17,7 +17,7 @@ Apache WebServer in two different docker. Also, we configure a monitor server in
 the docker host which collects and send docker log files to Amazon S3.
 
 
-# Premisses
+# Prerequisites
 * S3 Amazon proper configured (with a valid Access Key);
 * Ansible is already [installed](http://docs.ansible.com/ansible/intro_installation.html) in all VMs and the user centos (with sudo privilegies) are
 configured;

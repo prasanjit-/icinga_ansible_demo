@@ -1,0 +1,90 @@
+---
+- hosts: all
+  user: root
+  become: yes
+  become_user: root
+  vars:
+    password: intellipaat
+    base_dir: "{{ BASE_DIR|default('/home/prasanjit/') }}"
+    icinga_conf: '/etc/icinga/conf.d'
+
+  tasks:
+    - name: Add user prasanjit in all hosts
+      user: name=prasanjit shell=/bin/bash comment="Master User" password={{password}}
+
+    - name: Adding prasanjit to sudoers
+      lineinfile: dest=/etc/sudoers
+        backup=yes
+        line='prasanjit	ALL=(ALL)	ALL'
+        state=present
+
+    - name: Allow SSH connections with password
+      copy: src=./Templates/sshd_config dest=/etc/ssh/ owner=root group=root mode=644 backup=yes
+
+    - name: Install Icinga configuration file
+      copy: src=./Templates/ido2db.cfg dest=/etc/icinga/ owner=root group=root mode=644 backup=yes
+
+    - name: Add Google DNS to all hosts
+      lineinfile: dest=/etc/resolv.conf
+        backup=yes
+        line='nameserver 8.8.8.8'
+        state=present
+
+    - name: Install packages from yum repos
+      yum: name={{ item }} state=latest update_cache=no
+      with_items:
+        - git
+        - vim
+
+    - name: SSH Restart
+      service: name=sshd pattern=/usr/sbin/sshd state=reloaded
+
+    - name: Clonning GIT repo
+      git: repo=https://github.com/prasanjit-/icinga_ansible_demo.git dest={{ base_dir }}/IsingaMonitor/
+
+    - name: Adjust Timezone to Kolkata in CentOS 6
+      file:
+        src: /usr/share/zoneinfo/Asia/Kolkata
+        dest: /etc/localtime
+        state: link
+      when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
+
+    - name: Install packages from yum repos
+      yum: name={{ item }} state=latest update_cache=no
+      with_items:
+        - docker-io
+        - icinga
+        - icinga-gui
+        - icinga-doc
+        - nagios-plugins
+        - icinga-idoutils-libdbi-mysql
+
+    - name: Install python libs dependences
+      pip: name=docker-py version=1.1.0
+
+    - name: Install boto python lib to connect to AWS S3
+      pip: name=boto
+
+    - name: Download Icinga Plugins
+      get_url: url=https://www.monitoring-plugins.org/download/monitoring-plugins-2.1.2.tar.gz dest=/tmp/
+
+    - name: Create HTTP Icinga Conf file
+      template: src=./Templates/myhttpd.j2 dest={{ icinga_conf }}/myhttp.conf
+
+    - name: Create MySQL Icinga Conf file
+      template: src=./Templates/mydb.j2 dest={{ icinga_conf }}/mydb.conf
+
+    - name: Start docker service
+      service: name=docker state=started enabled=yes
+
+    - name: Build or Check MySQL Image
+      docker_image: path="{{ base_dir }}/IsingaMonitor/Docker/MySQL" name="mysql" state=present
+
+    - name: Start MySQL Image
+      docker: image="mysql" name="mydb" ports=0.0.0.0:3306:3306 command="/sbin/my_init" state=started
+
+    - name: Build or Check HTTPD Image
+      docker_image: path="{{ base_dir }}/IsingaMonitor/Docker/HTTPD" name="httpd" state=present
+
+    - name: Start HTTP Image
+      docker: image="httpd" name="myhttpd" ports=0.0.0.0:80:80 state=started

@@ -23,7 +23,6 @@ the docker host which collects and send docker log files to Amazon S3.
 configured;
 * EPEL repository [installed](https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/)
 in all servers (when using Red Hat based distros);
-* RPMForge repository [installed](https://wiki.centos.org/AdditionalResources/Repositories/RPMForge) in all servers (when using Red Hat based distros);
 
 # Installation Procedure
 

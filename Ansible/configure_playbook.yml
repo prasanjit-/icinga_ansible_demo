@@ -112,20 +112,17 @@
       ignore_errors: yes
 
     - name: Start Apache Container - invoke container
-      command: docker run -d -p 90:80 --name myhttpd httpd
+      command: docker run -d -p 80:80 --name myhttpd httpd
       ignore_errors: yes
 
-    - name: HTTPD (Icinga) Restart
-      service: name=httpd pattern=/usr/sbin/sshd state=reloaded
-
     - file:
-        path: {{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh
+        path: "{{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh"
         owner: root
         group: root
         mode: 0777
 
     - name: Run Post Install Script (if not already executed, else skip and conclude)
-      script: {{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh
+      script: "{{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh"
       ignore_errors: yes
 
     - name: Copy cron script to root home dir
@@ -140,3 +137,9 @@
 
     - name: Create cron job to send files to S3
       cron: name="Job to copy log files to AWS S3." minute="0" hour="7" job="/root/cron_job.sh"
+
+    - name: Setting Ichinga to listen on port 3000
+          lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 80" line="Listen 3000" state=present
+
+    - name: Reload Icinga for regular use
+      service: name=httpd pattern=/usr/sbin/sshd state=reloaded

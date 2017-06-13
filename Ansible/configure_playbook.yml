@@ -118,12 +118,14 @@
     - name: HTTPD (Icinga) Restart
       service: name=httpd pattern=/usr/sbin/sshd state=reloaded
 
-    - name: Make postinstall script executable
-      command: chmod +x ../Scripts/Shell/postinstall.sh
-      ignore_errors: yes
+    - file:
+        path: {{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh
+        owner: root
+        group: root
+        mode: 0777
 
     - name: Run Post Install Script (if not already executed, else skip and conclude)
-      command: docker rm -f myhttpd
+      script: {{ base_dir }}/icinga_ansible_demo/Scripts/Shell/postinstall.sh
       ignore_errors: yes
 
     - name: Copy cron script to root home dir

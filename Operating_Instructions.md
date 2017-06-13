@@ -1,5 +1,7 @@
 # Table of Contents
 
+(The described setup has been tested to be working fine for CentOS 7 instances)
+
 1. [Introduction](#introduction)
 2. [Prerequisites](#prerequisites)
 3. [Installation Procedure](#installation-procedure)

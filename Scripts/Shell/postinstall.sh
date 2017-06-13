@@ -1,8 +1,8 @@
 #!/bin/bash
 #Post installation tasks
-
+cd ~/icinga_ansible_demo/Icinga/
 #Import icinga DB
-docker exec -i mydb mysql -proot -uroot < ../Icinga/IcingaDB.sql
+docker exec -i mydb mysql -proot -uroot < IcingaDB.sql
 
 #Install icinga plugins & start daemon-
 cd /tmp/

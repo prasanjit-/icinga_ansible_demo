@@ -55,7 +55,8 @@ localhost | SUCCESS => {
 
 ## Running Ansible
 
-Once you clone the git repository and all hosts are reachable, run the playbook as following:
+Once you clone the git repository and all hosts are reachable, run the playbook as root user to do the following:
+Also, ensure that you have set up ssh keys for 'centos' user when using AWS instance.
 
 ```
 # ansible-playbook -v configure_playbook.yml
@@ -75,7 +76,7 @@ This ansible script performs the following tasks:
   * Packages and Libs Installation;
   * Clone this GIT repository.
 * Install two dockers (one running httpd and the other one running MySQL);
-* Prepare Icinga daemon;
+* Prepare Icinga daemon.
 * Install cron entries.
 
 ## MySQL Remote Connection

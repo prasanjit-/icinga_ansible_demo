@@ -63,6 +63,7 @@
       with_items:
         - docker-io
         - docker
+        - httpd
         - icinga
         - icinga-gui
         - icinga-doc
@@ -81,6 +82,13 @@
 
     - name: Create MySQL Icinga Conf file
       template: src=./Templates/mydb.j2 dest={{ icinga_conf }}/mydb.conf
+
+    - sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        sysctl_set: yes
+        state: present
+        reload: yes
 
     - name: Start docker service
       service: name=docker state=started enabled=yes
@@ -104,5 +112,16 @@
       ignore_errors: yes
 
     - name: Start Apache Container - invoke container
-      command: docker run -d -p 80:80 --name myhttpd httpd
+      command: docker run -d -p 90:80 --name myhttpd httpd
+      ignore_errors: yes
+
+    - name: HTTPD (Icinga) Restart
+      service: name=httpd pattern=/usr/sbin/sshd state=reloaded
+
+    - name: Make postinstall script executable
+      command: chmod +x ../Scripts/Shell/postinstall.sh
+      ignore_errors: yes
+
+    - name: Run Post Install Script (if not already executed, else skip and conclude)
+      command: docker rm -f myhttpd
       ignore_errors: yes

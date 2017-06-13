@@ -130,8 +130,5 @@
         regexp: '^Listen 80'
         replace: 'Listen 3000'
 
-    - name: Setting Ichinga to listen on port 3000
-          lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 80" line="Listen 3000" state=present
-
     - name: Reload Icinga for regular use
       service: name=httpd pattern=/usr/sbin/sshd state=reloaded

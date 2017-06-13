@@ -138,8 +138,10 @@
     - name: Create cron job to send files to S3
       cron: name="Job to copy log files to AWS S3." minute="0" hour="7" job="/root/cron_job.sh"
 
-    - name: Setting Ichinga to listen on port 3000
-          lineinfile: dest=/etc/httpd/conf/httpd.conf regexp="^Listen 80" line="Listen 3000" state=present
+    - replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen 80'
+        replace: 'Listen 3000'
 
     - name: Reload Icinga for regular use
       service: name=httpd pattern=/usr/sbin/sshd state=reloaded

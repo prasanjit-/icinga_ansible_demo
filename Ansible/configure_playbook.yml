@@ -40,7 +40,7 @@
       service: name=sshd pattern=/usr/sbin/sshd state=reloaded
 
     - name: Cloning GIT repo
-      git: repo=https://github.com/prasanjit-/icinga_ansible_demo.git dest={{ base_dir }}/IsingaMonitor/
+      git: repo=https://github.com/prasanjit-/icinga_ansible_demo.git dest={{ base_dir }}/icinga_ansible_demo/
 
     - name: Adjust Timezone to Kolkata in CentOS 6
       file:
@@ -49,18 +49,26 @@
         state: link
       when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "6")
 
+    - name: Import icinga key
+      command: rpm --import http://packages.icinga.org/icinga.key
+      ignore_errors: yes
+
+    - name: Install icinga from yum repos
+      yum:
+        name: https://packages.icinga.org/epel/7/release/noarch/icinga-rpm-release-7-1.el7.centos.noarch.rpm
+        state: present
+
     - name: Install packages from yum repos
       yum: name={{ item }} state=latest update_cache=no
       with_items:
         - docker-io
+        - docker
         - icinga
         - icinga-gui
         - icinga-doc
         - nagios-plugins
         - icinga-idoutils-libdbi-mysql
-
-    - name: Install python libs dependences
-      pip: name=docker-py version=1.1.0
+        - python-pip
 
     - name: Install boto python lib to connect to AWS S3
       pip: name=boto
@@ -78,16 +86,26 @@
       service: name=docker state=started enabled=yes
 
     - name: Build or Check MySQL Image
-      docker_image: path="{{ base_dir }}/IsingaMonitor/Docker/MySQL" name="mysql" state=present
+      docker_image: path="{{ base_dir }}/icinga_ansible_demo/Docker/MySQL" name="mysql" state=present
 
-    - name: Start MySQL Image
-      docker: image="mysql" name="mydb" ports=0.0.0.0:3306:3306 command="/sbin/my_init" state=started
+    - name: Start MySQL Container - clear if exists
+      command: docker rm -f mydb
+      ignore_errors: yes
+
+    - name: Start MySQL Container - invoke container
+      command: docker run -d -p 3306:3306 --name mydb mysql
+      ignore_errors: yes
 
     - name: Build or Check HTTPD Image
-      docker_image: path="{{ base_dir }}/IsingaMonitor/Docker/HTTPD" name="httpd" state=present
+      docker_image: path="{{ base_dir }}/icinga_ansible_demo/Docker/HTTPD" name="httpd" state=present
 
-    - name: Start HTTP Image
-      docker: image="httpd" name="myhttpd" ports=0.0.0.0:80:80 state=started
+    - name: Start Apache Container - clear if exists
+      command: docker rm -f myhttpd
+      ignore_errors: yes
+
+    - name: Start Apache Container - invoke container
+      command: docker run -d -p 80:80 --name myhttpd httpd
+      ignore_errors: yes
 
     - name: Copy cron script to root home dir
       copy: src=../Scripts/{{ item }} dest=/root/ mode="a+x"

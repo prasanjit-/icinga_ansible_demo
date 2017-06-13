@@ -98,7 +98,7 @@ exit
 After the sequence of these commands you should be able to connect to MySQL from the host.
 
 ```
-# mysql -P 3360 -u root -p -h 172.17.42.1
+# mysql -P 3360 -u root -p -h 172.17.0.1
 Enter password:
 
 mysql>

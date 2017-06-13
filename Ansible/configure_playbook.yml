@@ -42,7 +42,7 @@
     - name: Cloning GIT repo
       git: repo=https://github.com/prasanjit-/icinga_ansible_demo.git dest={{ base_dir }}/icinga_ansible_demo/
 
-    - name: Adjust Timezone to Kolkata in CentOS 6
+    - name: Adjust Timezone if its CentOS 6
       file:
         src: /usr/share/zoneinfo/Asia/Kolkata
         dest: /etc/localtime

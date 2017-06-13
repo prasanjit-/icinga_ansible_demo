@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS icinga;
 CREATE DATABASE icinga;
 GRANT USAGE ON icinga.* TO 'icinga'@'localhost' IDENTIFIED BY 'icinga' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0;
 GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE VIEW, INDEX, EXECUTE ON icinga.* TO 'icinga'@'localhost';
@@ -29,7 +30,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Table structure for table icinga_acknowledgements
 --
-
+USE icinga;
 CREATE TABLE IF NOT EXISTS icinga_acknowledgements (
   acknowledgement_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   instance_id bigint unsigned default 0,

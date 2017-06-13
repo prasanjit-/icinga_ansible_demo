@@ -2,7 +2,7 @@
 #Post installation tasks
 
 #Import icinga DB
-docker exec -i -t mydb mysql -proot -uroot < ../Icinga/IcingaDB.sql
+docker exec -i mydb mysql -proot -uroot < ../Icinga/IcingaDB.sql
 
 #Install icinga plugins & start daemon-
 cd /tmp/

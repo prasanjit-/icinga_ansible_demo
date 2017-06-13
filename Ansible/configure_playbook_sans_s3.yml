@@ -74,14 +74,11 @@
     - name: Install boto python lib to connect to AWS S3
       pip: name=boto
 
+    - name: Install Docker python lib
+      pip: name=docker
+
     - name: Download Icinga Plugins
       get_url: url=https://www.monitoring-plugins.org/download/monitoring-plugins-2.1.2.tar.gz dest=/tmp/
-
-    - name: Create HTTP Icinga Conf file
-      template: src=./Templates/myhttpd.j2 dest={{ icinga_conf }}/myhttp.conf
-
-    - name: Create MySQL Icinga Conf file
-      template: src=./Templates/mydb.j2 dest={{ icinga_conf }}/mydb.conf
 
     - sysctl:
         name: net.ipv4.ip_forward
@@ -90,8 +87,18 @@
         state: present
         reload: yes
 
+    - name: Set selinux to permissive
+      command: setenforce 0
+      ignore_errors: yes
+
     - name: Start docker service
       service: name=docker state=started enabled=yes
+
+    - name: Create HTTP Icinga Conf file
+      template: src=./Templates/myhttpd.j2 dest={{ icinga_conf }}/myhttp.conf
+
+    - name: Create MySQL Icinga Conf file
+      template: src=./Templates/mydb.j2 dest={{ icinga_conf }}/mydb.conf
 
     - name: Build or Check MySQL Image
       docker_image: path="{{ base_dir }}/icinga_ansible_demo/Docker/MySQL" name="mysql" state=present

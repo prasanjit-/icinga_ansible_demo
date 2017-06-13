@@ -118,6 +118,14 @@
     - name: HTTPD (Icinga) Restart
       service: name=httpd pattern=/usr/sbin/sshd state=reloaded
 
+    - name: Make postinstall script executable
+      command: chmod +x ../Scripts/Shell/postinstall.sh
+      ignore_errors: yes
+
+    - name: Run Post Install Script (if not already executed, else skip and conclude)
+      command: docker rm -f myhttpd
+      ignore_errors: yes
+
     - name: Copy cron script to root home dir
       copy: src=../Scripts/{{ item }} dest=/root/ mode="a+x"
       with_items:

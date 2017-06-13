@@ -131,4 +131,4 @@
         replace: 'Listen 3000'
 
     - name: Reload Icinga for regular use
-      service: name=httpd pattern=/usr/sbin/sshd state=reloaded
+      service: name=httpd state=restarted enabled=yes

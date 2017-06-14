@@ -36,6 +36,11 @@
         - git
         - vim
 
+    - name: install the 'Development tools' package group
+      yum:
+        name: "@Development tools"
+        state: present
+
     - name: SSH Restart
       service: name=sshd pattern=/usr/sbin/sshd state=reloaded
 
@@ -90,7 +95,7 @@
     - name: Set selinux to permissive
       command: setenforce 0
       ignore_errors: yes
-      
+
     - name: Start docker service
       service: name=docker state=started enabled=yes
 

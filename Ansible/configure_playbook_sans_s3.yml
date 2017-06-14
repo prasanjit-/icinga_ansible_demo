@@ -142,5 +142,8 @@
         regexp: '^Listen 80'
         replace: 'Listen 3000'
 
+    - name: Reload Icinga Web for regular use
+      service: name=httpd state=restarted enabled=yes
+
     - name: Reload Icinga for regular use
       service: name=httpd state=restarted enabled=yes

@@ -3,8 +3,6 @@ import time
 
 import boto
 from boto.s3.key import Key
-
-
 def upload_to_s3(aws_access_key_id, aws_secret_access_key, file, bucket, key,
                  callback=None, md5=None, reduced_redundancy=False,
                  content_type=None):
@@ -16,7 +14,7 @@ def upload_to_s3(aws_access_key_id, aws_secret_access_key, file, bucket, key,
         size = file.tell()
 
     conn = boto.connect_s3(aws_access_key_id, aws_secret_access_key)
-    bucket = conn.get_bucket(bucket, validate=True)
+    bucket = conn.get_bucket('lab-server', validate=True) ## lab-server is my bucket name in S3
     k = Key(bucket)
     k.key = key
     if content_type:
